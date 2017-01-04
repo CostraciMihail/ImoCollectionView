@@ -26,8 +26,12 @@ class TextFooterViewSource: ImoCollectionReusableViewSource {
         
         if let font = self.font {
             
-            let size = font.sizeOfString(string: self.text! , constrainedToWidth: Double(screenSize.width-30))
-            setHeight(height:CGFloat(size.height + 25))
+            if let text = self.text {
+                
+                let size = font.sizeOfString(string: text , constrainedToWidth: Double(screenSize.width-30))
+                setHeight(height:CGFloat(size.height + 25))
+                
+            }
             
         }
         else {

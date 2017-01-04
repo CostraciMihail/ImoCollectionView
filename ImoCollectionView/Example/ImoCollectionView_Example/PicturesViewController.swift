@@ -17,6 +17,24 @@ class PicturesViewController: UIViewController {
        
         super.viewDidLoad()
         populateTable()
+        
+        collectionView.allowsSelection = true
+        
+        collectionView.canFocusItemAt = { (index)  in
+        
+            print("indexPath: \(index)")
+    
+            
+            return true
+        }
+        
+        
+        collectionView.didSelectSource = { (source) in
+        
+            
+        
+        }
+        
     }
     
     func populateTable() {
@@ -24,9 +42,11 @@ class PicturesViewController: UIViewController {
         collectionView.deleteAllSections()
         collectionView.addSection(section: section(pictures:imagesCats, headerTitle:"Cats"))
         
+        
         let sectionObj = section(pictures:imagesNature, headerTitle:"Nature")
         sectionObj.footerViewSource = footer(text: texts[0])
         
+        collectionView.setSticky(header: true, footer: true)
         collectionView.addSection(section: sectionObj)
         collectionView.reloadData()
     }
@@ -57,7 +77,7 @@ class PicturesViewController: UIViewController {
     
     func footer(text:String) -> TextFooterViewSource {
         
-        let footer = TextFooterViewSource(footerWithHeight: 200)
+        let footer = TextFooterViewSource(footerWithHeight: 70)
         footer.text = texts[0]
         return footer;
         

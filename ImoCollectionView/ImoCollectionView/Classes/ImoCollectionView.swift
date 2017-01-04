@@ -19,9 +19,13 @@ public class ImoCollectionView: UICollectionView,UICollectionViewDataSource,UICo
     var registeredCells = Array<String>()
     var registeredViews = Array<String>()
     var sections = Array<ImoCollectionViewSection>()
+
     
     public var didSelectSource:((ImoCollectionViewCellSource?) -> (Void))?
     public var didSelectItemAt:((IndexPath) -> (Void))?
+    public var canFocusItemAt:((IndexPath) -> (Bool))?
+    
+    
     public var scrollViewDidScroll:((UIScrollView) -> (Void))?
     public var scrollViewDidZoom:((UIScrollView) -> (Void))?
     public var scrollViewWillBeginDragging:((UIScrollView) -> (Void))?
@@ -72,6 +76,58 @@ public class ImoCollectionView: UICollectionView,UICollectionViewDataSource,UICo
         }
         
     }
+    
+    
+    
+    public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        
+        return true
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        
+        return true
+    }
+    
+    
+    public func collectionView(_ collectionView: UICollectionView, transitionLayoutForOldLayout fromLayout: UICollectionViewLayout, newLayout toLayout: UICollectionViewLayout) -> UICollectionViewTransitionLayout {
+        
+        var transitionLayou = self.collectionViewLayout
+        
+        
+        return transitionLayou as! UICollectionViewTransitionLayout
+    }
+    
+    
+    
+    public func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        
+        
+        return proposedIndexPath
+    }
+    
+    
+//    @objc(collectionView:canFocusItemAtIndexPath:)
+    func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath?) -> Bool {
+        
+        if let closure = self.canFocusItemAt {
+            closure(indexPath!)
+        }
+        
+        return true
+    }
+    
+    
+//    public func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
+//        
+//        if let closure = self.canFocusItemAt {
+//            closure(indexPath)
+//        }
+//        
+//        return true
+//    }
+    
+    
     
     // MARK: - UICollectionViewDataSource
     
@@ -320,6 +376,46 @@ public class ImoCollectionView: UICollectionView,UICollectionViewDataSource,UICo
         return CGSize(width: 0, height: 0)
         
     }
+    
+    
+    public func setSticky(header: Bool, footer:Bool) {
+        
+        if header {
+            
+            // casting is required because UICollectionViewLayout doesn't offer header pin.
+            //Its feature of UICollectionViewFlowLayout
+            var layout = self.collectionViewLayout as? UICollectionViewFlowLayout
+            
+            if #available(iOS 9.0, *) {
+                layout?.sectionHeadersPinToVisibleBounds = true
+                
+            } else {
+            
+                layout = ImoCustomCollectionFlowLayout()
+            }
+
+            self.collectionViewLayout = layout!
+        }
+        
+        if footer {
+            
+            // casting is required because UICollectionViewLayout doesn't offer header pin.
+            //Its feature of UICollectionViewFlowLayout
+            var layout = self.collectionViewLayout as? UICollectionViewFlowLayout
+            
+            if #available(iOS 9.0, *) {
+                layout?.sectionFootersPinToVisibleBounds = true
+                
+            } else {
+                
+                layout = ImoCustomCollectionFlowLayout()
+            }
+            
+            self.collectionViewLayout = layout!
+        }
+
+    }
+    
     
     // MARK: - UIScrollViewDelegate
     
